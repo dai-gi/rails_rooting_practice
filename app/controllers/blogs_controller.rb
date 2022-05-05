@@ -1,5 +1,6 @@
 class BlogsController < ApplicationController
-  before_action :set_blog, only: [:show, :edit, :update, :destroy]
+  # before_action :set_blog, only: [:show, :edit, :update, :destroy]
+  after_action :log_response, only: [:show]
 
   # GET /blogs
   # GET /blogs.json
@@ -24,18 +25,23 @@ class BlogsController < ApplicationController
   # POST /blogs
   # POST /blogs.json
   def create
-    binding.pry
     @blog = Blog.new(blog_params)
-
-    respond_to do |format|
-      if @blog.save
-        format.html { redirect_to @blog, notice: 'Blog was successfully created.' }
-        format.json { render :show, status: :created, location: @blog }
-      else
-        format.html { render :new }
-        format.json { render json: @blog.errors, status: :unprocessable_entity }
-      end
+    if @blog.save
+      flash[:notice] = "ブログを作成しました"
+      redirect_to root_url
+    else
+      flash.now[:notice] = "ブログの作成に失敗しました"
+      render "new"
     end
+    # respond_to do |format|
+    #   if @blog.save
+    #     format.html { redirect_to @blog, notice: 'Blog was successfully created.' }
+    #     format.json { render :show, status: :created, location: @blog }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @blog.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /blogs/1
@@ -71,5 +77,9 @@ class BlogsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def blog_params
       params.require(:blog).permit(:title, :content)
+    end
+
+    def log_response
+      logger.debug "レスポンスのログ: #{response.inspect}"
     end
 end
