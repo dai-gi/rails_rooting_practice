@@ -1,6 +1,6 @@
 class BlogsController < ApplicationController
-  # before_action :set_blog, only: [:show, :edit, :update, :destroy]
-  after_action :log_response, only: [:show]
+  before_action :set_blog, only: [:show, :edit, :update, :destroy]
+  # after_action :log_response, only: [:show]
 
   # GET /blogs
   # GET /blogs.json
@@ -11,6 +11,7 @@ class BlogsController < ApplicationController
   # GET /blogs/1
   # GET /blogs/1.json
   def show
+    render json: @blog
   end
 
   # GET /blogs/new
